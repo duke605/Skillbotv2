@@ -26,14 +26,23 @@ namespace SkillBotv2
         }
         private static void SetupCommands()
         {
+            ICommand c;
             Commands.Add("item", new CommandItem());
             Commands.Add("recipe", new CommandRecipe());
             Commands.Add("user", new CommandUser());
             Commands.Add("imagify", new CommandImagify());
             Commands.Add("clean", new CommandClean());
-            Commands.Add("about", new CommandAbout());
-            Commands.Add("portables", new CommandPortables());
             Commands.Add("help", new CommandHelp());
+
+            // About aliases
+            c = new CommandAbout();
+            Commands.Add("about", c);
+            Commands.Add("info", c);
+
+            // Portables aliases
+            c = new CommandPortables();
+            Commands.Add("portables", c);
+            Commands.Add("portable", c);
         }
 
         private static void SetupMessageListener()

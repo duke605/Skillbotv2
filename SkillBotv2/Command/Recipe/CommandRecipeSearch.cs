@@ -205,8 +205,8 @@ namespace SkillBotv2.Command.Recipe
                     r.Id
                     , r.Name
                     , new Table.Column(r.Level, Table.Column.Alignment.Right)
-                    , new Table.Column(r.Exp.ToString("N"), Table.Column.Alignment.Right)
-                    , new Table.Column(r.ExpH.ToString("N"), Table.Column.Alignment.Right)
+                    , new Table.Column(r.Exp.ToString("#,##0.##"), Table.Column.Alignment.Right)
+                    , new Table.Column(r.ExpH.ToString("#,##0.##"), Table.Column.Alignment.Right)
                     , new Table.Column(r.Number.ToString("#,##0"), Table.Column.Alignment.Right)
                     , new Table.Column(r.Cost.ToString("#,##0"), Table.Column.Alignment.Right)
                     , new Table.Column(r.Time.ToFormattedTime(), Table.Column.Alignment.Right)));

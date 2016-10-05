@@ -69,7 +69,7 @@ namespace SkillBotv2.Command
                     _values[0].ForEachWithIndex((i, e) 
                         => Locations[_values[0][i].Trim()] = _values[1][i].Trim()
                             .ToLower()
-                            .Replace(" ca", " Comabat Academy")
+                            .Replace(" ca", " Combat Academy")
                             .Replace(" ba", " Barbarian Assault")
                             .Replace(" bu", " Burthorpe")
                             .Replace(" cw", " Castle Wars")
