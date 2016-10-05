@@ -1,0 +1,366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Model.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="inputs">
+          <Key>
+            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="RecipeId" />
+          </Key>
+          <Property Name="ItemId" Type="ubigint" Nullable="false" />
+          <Property Name="RecipeId" Type="ubigint" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="items">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="ubigint" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="Price" Type="int" Nullable="false" />
+          <Property Name="UpdatedAt" Type="datetime" Precision="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="outputs">
+          <Key>
+            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="RecipeId" />
+          </Key>
+          <Property Name="ItemId" Type="ubigint" Nullable="false" />
+          <Property Name="RecipeId" Type="ubigint" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="recipes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="ubigint" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="Skill" Type="tinyint" Nullable="false" />
+          <Property Name="Exp" Type="double" Nullable="false" />
+          <Property Name="Units" Type="double" Nullable="false" />
+          <Property Name="Level" Type="tinyint" Nullable="false" />
+          <Property Name="UserId" Type="ubigint" Nullable="false" />
+          <Property Name="Extra" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="ubigint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Input_To_Item">
+          <End Role="items" Type="Self.items" Multiplicity="1" />
+          <End Role="inputs" Type="Self.inputs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="items">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="inputs">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Input_To_Recipe">
+          <End Role="recipes" Type="Self.recipes" Multiplicity="1" />
+          <End Role="inputs" Type="Self.inputs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="recipes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="inputs">
+              <PropertyRef Name="RecipeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Output_To_Item">
+          <End Role="items" Type="Self.items" Multiplicity="1" />
+          <End Role="outputs" Type="Self.outputs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="items">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="outputs">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Output_To_Recipe">
+          <End Role="recipes" Type="Self.recipes" Multiplicity="1" />
+          <End Role="outputs" Type="Self.outputs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="recipes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="outputs">
+              <PropertyRef Name="RecipeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Recipe_To_User">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="recipes" Type="Self.recipes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="recipes">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="inputs" EntityType="Self.inputs" Schema="skillbot" store:Type="Tables" />
+          <EntitySet Name="items" EntityType="Self.items" Schema="skillbot" store:Type="Tables" />
+          <EntitySet Name="outputs" EntityType="Self.outputs" Schema="skillbot" store:Type="Tables" />
+          <EntitySet Name="recipes" EntityType="Self.recipes" Schema="skillbot" store:Type="Tables" />
+          <EntitySet Name="users" EntityType="Self.users" Schema="skillbot" store:Type="Tables" />
+          <AssociationSet Name="FK_Input_To_Item" Association="Self.FK_Input_To_Item">
+            <End Role="items" EntitySet="items" />
+            <End Role="inputs" EntitySet="inputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Input_To_Recipe" Association="Self.FK_Input_To_Recipe">
+            <End Role="recipes" EntitySet="recipes" />
+            <End Role="inputs" EntitySet="inputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Output_To_Item" Association="Self.FK_Output_To_Item">
+            <End Role="items" EntitySet="items" />
+            <End Role="outputs" EntitySet="outputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Output_To_Recipe" Association="Self.FK_Output_To_Recipe">
+            <End Role="recipes" EntitySet="recipes" />
+            <End Role="outputs" EntitySet="outputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Recipe_To_User" Association="Self.FK_Recipe_To_User">
+            <End Role="users" EntitySet="users" />
+            <End Role="recipes" EntitySet="recipes" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="item">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Decimal" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Price" Type="Int32" Nullable="false" />
+          <Property Name="UpdatedAt" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="inputs" Relationship="Model.FK_Input_To_Item" FromRole="item" ToRole="input" />
+          <NavigationProperty Name="outputs" Relationship="Model.FK_Output_To_Item" FromRole="item" ToRole="output" />
+        </EntityType>
+        <EntityContainer Name="Database" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="items" EntityType="Self.item" />
+          <EntitySet Name="recipes" EntityType="Model.recipe" />
+          <EntitySet Name="inputs" EntityType="Model.input" />
+          <EntitySet Name="outputs" EntityType="Model.output" />
+          <AssociationSet Name="FK_Input_To_Item" Association="Model.FK_Input_To_Item">
+            <End Role="item" EntitySet="items" />
+            <End Role="input" EntitySet="inputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Input_To_Recipe" Association="Model.FK_Input_To_Recipe">
+            <End Role="recipe" EntitySet="recipes" />
+            <End Role="input" EntitySet="inputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Output_To_Item" Association="Model.FK_Output_To_Item">
+            <End Role="item" EntitySet="items" />
+            <End Role="output" EntitySet="outputs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Output_To_Recipe" Association="Model.FK_Output_To_Recipe">
+            <End Role="recipe" EntitySet="recipes" />
+            <End Role="output" EntitySet="outputs" />
+          </AssociationSet>
+          <EntitySet Name="users" EntityType="Model.user" />
+          <AssociationSet Name="FK_Recipe_To_User" Association="Model.FK_Recipe_To_User">
+            <End Role="user" EntitySet="users" />
+            <End Role="recipe" EntitySet="recipes" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="recipe">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Decimal" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Skill" Type="SByte" Nullable="false" />
+          <Property Name="Exp" Type="Double" Nullable="false" />
+          <Property Name="Units" Type="Double" Nullable="false" />
+          <Property Name="Level" Type="SByte" Nullable="false" />
+          <Property Name="UserId" Type="Decimal" Nullable="false" />
+          <NavigationProperty Name="inputs" Relationship="Model.FK_Input_To_Recipe" FromRole="recipe" ToRole="input" />
+          <NavigationProperty Name="outputs" Relationship="Model.FK_Output_To_Recipe" FromRole="recipe" ToRole="output" />
+          <NavigationProperty Name="user" Relationship="Model.FK_Recipe_To_User" FromRole="recipe" ToRole="user" />
+          <Property Name="Extra" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="input">
+          <Key>
+            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="RecipeId" />
+          </Key>
+          <Property Name="ItemId" Type="Decimal" Nullable="false" />
+          <Property Name="RecipeId" Type="Decimal" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="item" Relationship="Model.FK_Input_To_Item" FromRole="input" ToRole="item" />
+          <NavigationProperty Name="recipe" Relationship="Model.FK_Input_To_Recipe" FromRole="input" ToRole="recipe" />
+        </EntityType>
+        <EntityType Name="output">
+          <Key>
+            <PropertyRef Name="ItemId" />
+            <PropertyRef Name="RecipeId" />
+          </Key>
+          <Property Name="ItemId" Type="Decimal" Nullable="false" />
+          <Property Name="RecipeId" Type="Decimal" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="item" Relationship="Model.FK_Output_To_Item" FromRole="output" ToRole="item" />
+          <NavigationProperty Name="recipe" Relationship="Model.FK_Output_To_Recipe" FromRole="output" ToRole="recipe" />
+        </EntityType>
+        <Association Name="FK_Input_To_Item">
+          <End Type="Model.item" Role="item" Multiplicity="1" />
+          <End Type="Model.input" Role="input" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="item">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="input">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Input_To_Recipe">
+          <End Type="Model.recipe" Role="recipe" Multiplicity="1" />
+          <End Type="Model.input" Role="input" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="recipe">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="input">
+              <PropertyRef Name="RecipeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Output_To_Item">
+          <End Type="Model.item" Role="item" Multiplicity="1" />
+          <End Type="Model.output" Role="output" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="item">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="output">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Output_To_Recipe">
+          <End Type="Model.recipe" Role="recipe" Multiplicity="1" />
+          <End Type="Model.output" Role="output" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="recipe">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="output">
+              <PropertyRef Name="RecipeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Decimal" Nullable="false" />
+          <NavigationProperty Name="recipes" Relationship="Model.FK_Recipe_To_User" FromRole="user" ToRole="recipe" />
+        </EntityType>
+        <Association Name="FK_Recipe_To_User">
+          <End Type="Model.user" Role="user" Multiplicity="1" />
+          <End Type="Model.recipe" Role="recipe" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="recipe">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="Database">
+          <EntitySetMapping Name="items">
+            <EntityTypeMapping TypeName="Model.item">
+              <MappingFragment StoreEntitySet="items">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="UpdatedAt" ColumnName="UpdatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="recipes">
+            <EntityTypeMapping TypeName="Model.recipe">
+              <MappingFragment StoreEntitySet="recipes">
+                <ScalarProperty Name="Extra" ColumnName="Extra" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Exp" ColumnName="Exp" />
+                <ScalarProperty Name="Skill" ColumnName="Skill" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="inputs">
+            <EntityTypeMapping TypeName="Model.input">
+              <MappingFragment StoreEntitySet="inputs">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="RecipeId" ColumnName="RecipeId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="outputs">
+            <EntityTypeMapping TypeName="Model.output">
+              <MappingFragment StoreEntitySet="outputs">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="RecipeId" ColumnName="RecipeId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="Model.user">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
