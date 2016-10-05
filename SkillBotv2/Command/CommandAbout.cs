@@ -18,7 +18,7 @@ namespace SkillBotv2.Command
         {
             await m.Channel.SendMessage("__Author:__ @Duke605#4705\n" +
                                         "__Library:__ Discord.Net\n" +
-                                        "__Version:__ 2.0.1\n" +
+                                        "__Version:__ 2.0.2\n" +
                                         "__GitHubPage:__ <https://github.com/duke605/Skillbotv2>");
         }
     }
