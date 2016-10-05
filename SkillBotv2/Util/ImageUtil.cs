@@ -59,6 +59,11 @@ namespace SkillBotv2.Util
             return img;
         }
 
+        /// <summary>
+        /// Turns an image into a byte array
+        /// </summary>
+        /// <param name="img">The image to turn into a byte array</param>
+        /// <returns>The image as a byte[]</returns>
         public static byte[] ImageToByteArray(Image img)
         {
             using (var ms = new MemoryStream())
@@ -68,10 +73,15 @@ namespace SkillBotv2.Util
             }
         }
 
+        /// <summary>
+        /// Uploads an image to imgur
+        /// </summary>
+        /// <param name="img">The image to be uploaded</param>
+        /// <returns>The link to the image</returns>
         public static async Task<string> PostToImgur(Image img)
         {
             HttpResponse<ImgurResponse<ImageDetails>> r = await Unirest.post("https://api.imgur.com/3/image")
-                .header("authorization", "Client-ID c9ef3473de20ce9")
+                .header("authorization", $"Client-ID {Secret.ImgurClientId}")
                 .field("image", ImageToByteArray(img))
                 .field("type", "file")
                 .asJsonAsync<ImgurResponse<ImageDetails>>();
