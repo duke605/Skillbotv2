@@ -46,17 +46,16 @@ namespace SkillBotv2.Entities
         {
             public int Rank { get; set; }
             public int Level { get; set; }
-            public int Exp { get; set; }
+            public long Exp { get; set; }
 
             public static Stat CreateFromCSV(string[] parts)
             {
-                var s = new Stat();
-
-                s.Rank = int.Parse(parts[0]);
-                s.Level = int.Parse(parts[1]);
-                s.Exp = int.Parse(parts[2]);
-
-                return s;
+                return new Stat
+                {
+                    Rank = int.Parse(parts[0]),
+                    Level = int.Parse(parts[1]),
+                    Exp = long.Parse(parts[2])
+                }; ;
             }
         }
     }

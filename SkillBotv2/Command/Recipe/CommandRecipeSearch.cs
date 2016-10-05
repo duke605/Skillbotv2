@@ -29,9 +29,9 @@ namespace SkillBotv2.Command.Recipe
                 .Callback(s => a.Skill = s)
                 .Required();
 
-            parser.Setup<string>('u', "username")
+            parser.Setup<List<string>>('u', "username")
                 .Required()
-                .Callback(u => usernme = u);
+                .Callback(u => usernme = string.Join(" ", u));
 
             parser.Setup<bool>('i', "image")
                 .Callback(i => a.Image = i);

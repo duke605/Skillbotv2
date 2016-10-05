@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Discord;
-using Fclp;
-using Fclp.Internals.Extensions;
 using SkillBotv2.Extensions;
-using SuperSocket.ClientEngine;
 using unirest_net.http;
 
 namespace SkillBotv2.Command
@@ -48,7 +43,7 @@ namespace SkillBotv2.Command
 
             await message.Channel.SendMessage(
                 $"**Portable {portable}s**: {r.Body.Locations[$"{portable}s"]}\n" +
-                $"**Last Updated**: {r.Body.LastUpdate} by {r.Body.UpdatedBy}");
+                $"**Last Updated**: {r.Body.LastUpdate} ago by {r.Body.UpdatedBy}");
         }
 
         public class Cells
@@ -78,6 +73,7 @@ namespace SkillBotv2.Command
                             .Replace(" ba", " Barbarian Assault")
                             .Replace(" bu", " Burthorpe")
                             .Replace(" cw", " Castle Wars")
+                            .Replace(" sp", " Shanty Pass")
                             .Replace(" p", " Prifddinas"));
 
                     // Getting the person that last updated it

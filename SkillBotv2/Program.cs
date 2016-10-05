@@ -33,6 +33,7 @@ namespace SkillBotv2
             Commands.Add("clean", new CommandClean());
             Commands.Add("about", new CommandAbout());
             Commands.Add("portables", new CommandPortables());
+            Commands.Add("help", new CommandHelp());
         }
 
         private static void SetupMessageListener()

@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="Command\CommandAbout.cs" />
     <Compile Include="Command\CommandClean.cs" />
+    <Compile Include="Command\CommandHelp.cs" />
     <Compile Include="Command\CommandImagify.cs" />
     <Compile Include="Command\CommandPortables.cs" />
     <Compile Include="Command\Item\CommandItem.cs" />
