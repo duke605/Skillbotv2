@@ -7,6 +7,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using RestSharp;
+
 namespace SkillBotv2
 {
     using System.Data.Entity;
@@ -14,8 +16,9 @@ namespace SkillBotv2
     
     public partial class Database : DbContext
     {
-        public Database() : base($"name=Database;password={Secret.DbPassword}")
+        public Database() : base("name=Database")
         {
+            Database.Connection.ConnectionString = Database.Connection.ConnectionString.Replace("{password}", Secret.DbPassword);
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

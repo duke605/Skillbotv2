@@ -83,5 +83,24 @@ namespace SkillBotv2.Extensions
         /// <returns>The rounded number</returns>
         public static double Round(this double s)
             => Math.Round(s);
+
+        /// <summary>
+        /// Searches an array from the target
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="s">The haystack</param>
+        /// <param name="target">The needle</param>
+        /// <returns>The index where the target was located. -1 if the target was not found</returns>
+        public static int IndexOf<T>(this IEnumerable<T> s, T target)
+        {
+            for(var i = 0;i < s.Count();i++)
+                if (s.ElementAt(i).Equals(target))
+                    return i;
+
+            return -1;
+        }
+
+        public static int ToInt(this string s)
+            => int.Parse(s);
     }
 }

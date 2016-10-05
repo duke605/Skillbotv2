@@ -22,7 +22,8 @@ namespace SkillBotv2.Command
                 .Where(m => m.User.Id == Program.Client.CurrentUser.Id)
                 .ToArray();
 
-            await message.Channel.DeleteMessages(messages);
+            foreach (var m in messages)
+                await m.Delete();
 
             var m1 = await message.Channel.SendMessage($"Deleted **{messages.Length}** messages.");
             await Task.Delay(5000);

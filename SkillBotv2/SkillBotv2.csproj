@@ -102,6 +102,7 @@
     <Compile Include="Command\CommandAbout.cs" />
     <Compile Include="Command\CommandClean.cs" />
     <Compile Include="Command\CommandImagify.cs" />
+    <Compile Include="Command\CommandPortables.cs" />
     <Compile Include="Command\Item\CommandItem.cs" />
     <Compile Include="Command\ICommand.cs" />
     <Compile Include="Command\Item\CommandItemAdd.cs" />

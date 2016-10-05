@@ -8,6 +8,8 @@ using SkillBotv2.Command.Item;
 using SkillBotv2.Command.Recipe;
 using SkillBotv2.Command.User;
 using SkillBotv2.Util;
+using SuperSocket.ClientEngine;
+using unirest_net.http;
 
 namespace SkillBotv2
 {
@@ -15,7 +17,7 @@ namespace SkillBotv2
     {
         public static DiscordClient Client = new DiscordClient();
         public static Dictionary<string, ICommand> Commands = new Dictionary<string, ICommand>();
-
+        
         static void Main(string[] args)
         {
             SetupCommands();
@@ -30,6 +32,7 @@ namespace SkillBotv2
             Commands.Add("imagify", new CommandImagify());
             Commands.Add("clean", new CommandClean());
             Commands.Add("about", new CommandAbout());
+            Commands.Add("portables", new CommandPortables());
         }
 
         private static void SetupMessageListener()
