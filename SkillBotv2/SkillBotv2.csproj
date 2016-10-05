@@ -149,6 +149,7 @@
     <Compile Include="recipe.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
+    <Compile Include="Secret.cs" />
     <Compile Include="user.cs">
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
