@@ -9,6 +9,7 @@ using SkillBotv2.Command.Item;
 using SkillBotv2.Command.Recipe;
 using SkillBotv2.Command.User;
 using SkillBotv2.Exceptions;
+using SkillBotv2.Extensions;
 using SkillBotv2.Util;
 using SuperSocket.ClientEngine;
 using unirest_net.http;
@@ -23,7 +24,7 @@ namespace SkillBotv2
         static void Main(string[] args)
         {
             SetupCommands();
-            SetupJoinListener();
+            SetupStateListener();
             SetupMessageListener();
             Connect();
         }
@@ -69,8 +70,32 @@ namespace SkillBotv2
             Commands.Add("portable", c);
         }
 
-        private static void SetupJoinListener()
+        private static void SetupStateListener()
         {
+            Client.LeftServer += async (s, e) =>
+            {
+                // Creating settings for server
+                using (var db = new Database())
+                {
+                    await db.Database.Transaction(async () =>
+                    {
+                        var ret = await db.Database.ExecuteSqlCommandAsync(
+                            $"DELETE FROM channels WHERE ServerId = {e.Server.Id}");
+
+                        // Checking if channels were deleted
+                        if (ret < 0)
+                            throw new Exception($"Failed to delete channels that belong to server {e.Server.Id}");
+
+                        ret = await db.Database.ExecuteSqlCommandAsync(
+                            $"DELETE FROM servers WHERE Id = {e.Server.Id}");
+
+                        // Checking if channels were deleted
+                        if (ret < 0)
+                            throw new Exception($"Failed to delete server with the id {e.Server.Id}");
+                    });
+                }
+            };
+
             Client.JoinedServer += async (s, e) =>
             {
                 // Creating settings for server
