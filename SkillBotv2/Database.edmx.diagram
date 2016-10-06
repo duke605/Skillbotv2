@@ -15,6 +15,9 @@
         <AssociationConnector Association="Model.FK_Output_To_Recipe" />
         <EntityTypeShape EntityType="Model.user" Width="1.5" PointX="8.25" PointY="2.875" />
         <AssociationConnector Association="Model.FK_Recipe_To_User" />
+        <EntityTypeShape EntityType="Model.channel" Width="1.5" PointX="3" PointY="6.875" />
+        <EntityTypeShape EntityType="Model.server" Width="1.5" PointX="0.75" PointY="6.875" />
+        <AssociationConnector Association="Model.FK_Channel_To_Server" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Discord;
@@ -7,6 +8,7 @@ using SkillBotv2.Command;
 using SkillBotv2.Command.Item;
 using SkillBotv2.Command.Recipe;
 using SkillBotv2.Command.User;
+using SkillBotv2.Exceptions;
 using SkillBotv2.Util;
 using SuperSocket.ClientEngine;
 using unirest_net.http;
@@ -21,6 +23,7 @@ namespace SkillBotv2
         static void Main(string[] args)
         {
             SetupCommands();
+            SetupJoinListener();
             SetupMessageListener();
             Connect();
         }
@@ -31,6 +34,9 @@ namespace SkillBotv2
             Commands.Add("imagify", new CommandImagify());
             Commands.Add("help", new CommandHelp());
             Commands.Add("online", new CommandOnline());
+            Commands.Add("price", new CommandPrice());
+            Commands.Add("use", new CommandUse());
+            Commands.Add("trigger", new CommandTrigger());
 
             // News aliases
             c = new CommandNews();
@@ -63,20 +69,47 @@ namespace SkillBotv2
             Commands.Add("portable", c);
         }
 
+        private static void SetupJoinListener()
+        {
+            Client.JoinedServer += async (s, e) =>
+            {
+                // Creating settings for server
+                using (var db = new Database())
+                {
+                    db.servers.Add(new server
+                    {
+                        Id = e.Server.Id,
+                        Trigger = "!"
+                    });
+
+                    if (await db.SaveChangesAsync() <= 0)
+                        await e.Server.Leave();
+                }
+            };
+        }
+
         private static void SetupMessageListener()
         {
             Client.MessageReceived += async (s, m) =>
             {
-                Match match;
                 ICommand command;
-                string message = m.Message.RawText.Trim();
+                var message = m.Message.RawText.Trim();
 
-                // Failing fast
-                if (m.Message.IsAuthor
-                    || (m.Channel.Id != 143730268614688768 && m.Channel.Id != 231188496642080770)
-                    || !(match = Regex.Match(message, @"^!(.+?)(?:\s|$)")).Groups[1].Success
-                    || !Commands.TryGetValue(match.Groups[1].Value, out command))
+                // Checking if we can output in this channel
+                using (var db = new Database())
+                {
+                    Match match;
+                    var server = await db.servers.FirstAsync(o => o.Id == m.Server.Id);
+
+                        // Failing fast
+                    if (m.Message.IsAuthor
+                        || m.Channel.IsPrivate
+                        || !(match = Regex.Match(message, $"^\\{server.Trigger}(.+?)(?:\\s|$)")).Groups[1].Success
+                        || !Commands.TryGetValue(match.Groups[1].Value.ToLower(), out command)
+                        || (match.Groups[1].Value.ToLower() != "use" && !db.channels.Any(c => c.Id == m.Channel.Id)))
                     return;
+   
+                }
 
                 dynamic args;
 
@@ -93,8 +126,8 @@ namespace SkillBotv2
                 // Parsing input
                 try
                 {
-                    var commandLine = message.Contains(' ') 
-                        ? message.Substring(message.IndexOf(' ') + 1) 
+                    var commandLine = message.Contains(' ')
+                        ? message.Substring(message.IndexOf(' ') + 1)
                         : "";
 
                     args = await command.ParseArguments(CommandLineUtil.CommandLineToArgs(commandLine), m.Message);
@@ -102,8 +135,14 @@ namespace SkillBotv2
                     // Checking if args returns a boolean
                     if (args is bool)
                         return;
-                } 
-                
+                }
+
+                catch (ControlledException e)
+                {
+                    await m.Channel.SendMessage(e.Message);
+                    return;
+                }
+
                 catch (Exception e)
                 {
                     await m.Channel.SendMessage("An error occured when parsing your input.\n" +
@@ -114,11 +153,16 @@ namespace SkillBotv2
 
                 // Executing command
                 try
-                { 
+                {
                     // Running command
                     await command.Execute(args, m.Message);
-                } 
-                
+                }
+
+                catch (ControlledException e)
+                {
+                    await m.Channel.SendMessage(e.Message);
+                }
+
                 catch (Exception e)
                 {
                     await m.Channel.SendMessage("An error occured when executing the command.\n" +

@@ -7,16 +7,16 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using RestSharp;
-
 namespace SkillBotv2
 {
+    using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
     public partial class Database : DbContext
     {
-        public Database() : base("name=Database")
+        public Database()
+            : base("name=Database")
         {
             Database.Connection.ConnectionString = Database.Connection.ConnectionString.Replace("{password}", Secret.DbPassword);
         }
@@ -31,5 +31,7 @@ namespace SkillBotv2
         public virtual DbSet<input> inputs { get; set; }
         public virtual DbSet<output> outputs { get; set; }
         public virtual DbSet<user> users { get; set; }
+        public virtual DbSet<channel> channels { get; set; }
+        public virtual DbSet<server> servers { get; set; }
     }
 }

@@ -5,6 +5,13 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Model.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="channels">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="ubigint" Nullable="false" />
+          <Property Name="ServerId" Type="ubigint" Nullable="false" />
+        </EntityType>
         <EntityType Name="inputs">
           <Key>
             <PropertyRef Name="ItemId" />
@@ -45,12 +52,31 @@
           <Property Name="UserId" Type="ubigint" Nullable="false" />
           <Property Name="Extra" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="servers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="ubigint" Nullable="false" />
+          <Property Name="Trigger" Type="char" MaxLength="1" Nullable="false" />
+        </EntityType>
         <EntityType Name="users">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="ubigint" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Channel_To_Server">
+          <End Role="servers" Type="Self.servers" Multiplicity="1" />
+          <End Role="channels" Type="Self.channels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="servers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="channels">
+              <PropertyRef Name="ServerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Input_To_Item">
           <End Role="items" Type="Self.items" Multiplicity="1" />
           <End Role="inputs" Type="Self.inputs" Multiplicity="*" />
@@ -112,11 +138,17 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="channels" EntityType="Self.channels" Schema="skillbot" store:Type="Tables" />
           <EntitySet Name="inputs" EntityType="Self.inputs" Schema="skillbot" store:Type="Tables" />
           <EntitySet Name="items" EntityType="Self.items" Schema="skillbot" store:Type="Tables" />
           <EntitySet Name="outputs" EntityType="Self.outputs" Schema="skillbot" store:Type="Tables" />
           <EntitySet Name="recipes" EntityType="Self.recipes" Schema="skillbot" store:Type="Tables" />
+          <EntitySet Name="servers" EntityType="Self.servers" Schema="skillbot" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="skillbot" store:Type="Tables" />
+          <AssociationSet Name="FK_Channel_To_Server" Association="Self.FK_Channel_To_Server">
+            <End Role="servers" EntitySet="servers" />
+            <End Role="channels" EntitySet="channels" />
+          </AssociationSet>
           <AssociationSet Name="FK_Input_To_Item" Association="Self.FK_Input_To_Item">
             <End Role="items" EntitySet="items" />
             <End Role="inputs" EntitySet="inputs" />
@@ -178,6 +210,12 @@
           <AssociationSet Name="FK_Recipe_To_User" Association="Model.FK_Recipe_To_User">
             <End Role="user" EntitySet="users" />
             <End Role="recipe" EntitySet="recipes" />
+          </AssociationSet>
+          <EntitySet Name="channels" EntityType="Model.channel" />
+          <EntitySet Name="servers" EntityType="Model.server" />
+          <AssociationSet Name="FK_Channel_To_Server" Association="Model.FK_Channel_To_Server">
+            <End Role="server" EntitySet="servers" />
+            <End Role="channel" EntitySet="channels" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="recipe">
@@ -285,6 +323,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="channel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Decimal" Nullable="false" />
+          <Property Name="ServerId" Type="Decimal" Nullable="false" />
+          <NavigationProperty Name="server" Relationship="Model.FK_Channel_To_Server" FromRole="channel" ToRole="server" />
+        </EntityType>
+        <EntityType Name="server">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Decimal" Nullable="false" />
+          <Property Name="Trigger" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="channels" Relationship="Model.FK_Channel_To_Server" FromRole="server" ToRole="channel" />
+        </EntityType>
+        <Association Name="FK_Channel_To_Server">
+          <End Type="Model.server" Role="server" Multiplicity="1" />
+          <End Type="Model.channel" Role="channel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="server">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="channel">
+              <PropertyRef Name="ServerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -336,6 +402,22 @@
           <EntitySetMapping Name="users">
             <EntityTypeMapping TypeName="Model.user">
               <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="channels">
+            <EntityTypeMapping TypeName="Model.channel">
+              <MappingFragment StoreEntitySet="channels">
+                <ScalarProperty Name="ServerId" ColumnName="ServerId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="servers">
+            <EntityTypeMapping TypeName="Model.server">
+              <MappingFragment StoreEntitySet="servers">
+                <ScalarProperty Name="Trigger" ColumnName="Trigger" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
