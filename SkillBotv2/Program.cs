@@ -33,6 +33,7 @@ namespace SkillBotv2
             Commands.Add("imagify", new CommandImagify());
             Commands.Add("clean", new CommandClean());
             Commands.Add("help", new CommandHelp());
+            Commands.Add("online", new CommandOnline());
 
             // About aliases
             c = new CommandAbout();
@@ -62,7 +63,15 @@ namespace SkillBotv2
 
                 dynamic args;
 
-                await m.Channel.SendIsTyping();
+                try
+                {
+                    await m.Channel.SendIsTyping();
+                }
+
+                catch (Exception)
+                {
+                    return;
+                }
 
                 // Parsing input
                 try
