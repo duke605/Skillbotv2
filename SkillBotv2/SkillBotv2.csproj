@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\CommandAbout.cs" />
+    <Compile Include="Command\CommandNews.cs" />
     <Compile Include="Command\CommandOnline.cs" />
     <Compile Include="Command\CommandClean.cs" />
     <Compile Include="Command\CommandHelp.cs" />

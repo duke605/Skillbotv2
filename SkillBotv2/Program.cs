@@ -32,6 +32,11 @@ namespace SkillBotv2
             Commands.Add("help", new CommandHelp());
             Commands.Add("online", new CommandOnline());
 
+            // News aliases
+            c = new CommandNews();
+            Commands.Add("news", c);
+            Commands.Add("new", c);
+
             // Clean up aliases
             c = new CommandClean();
             Commands.Add("clean", c);
