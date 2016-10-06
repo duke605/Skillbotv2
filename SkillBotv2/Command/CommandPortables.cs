@@ -74,7 +74,9 @@ namespace SkillBotv2.Command
                             .Replace(" bu", " Burthorpe")
                             .Replace(" cw", " Castle Wars")
                             .Replace(" sp", " Shanty Pass")
-                            .Replace(" p", " Prifddinas"));
+                            .Replace(" prif", " Prifddinas")
+                            .Replace(@" p(?:$|\s)", " Prifddinas")
+                            .ToSentenceCase());
 
                     // Getting the person that last updated it
                     UpdatedBy = _values[2][3];

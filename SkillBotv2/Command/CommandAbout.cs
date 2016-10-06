@@ -11,7 +11,7 @@ namespace SkillBotv2.Command
     {
         public async Task<object> ParseArguments(string[] args, Message message)
         {
-            return "";
+            return null;
         }
 
         public async Task Execute(object arguments, Message m)

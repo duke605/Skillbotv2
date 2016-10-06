@@ -27,13 +27,25 @@ namespace SkillBotv2
         private static void SetupCommands()
         {
             ICommand c;
-            Commands.Add("item", new CommandItem());
-            Commands.Add("recipe", new CommandRecipe());
             Commands.Add("user", new CommandUser());
             Commands.Add("imagify", new CommandImagify());
-            Commands.Add("clean", new CommandClean());
             Commands.Add("help", new CommandHelp());
             Commands.Add("online", new CommandOnline());
+
+            // Clean up aliases
+            c = new CommandClean();
+            Commands.Add("clean", c);
+            Commands.Add("clear", c);
+
+            // Recipes aliases
+            c = new CommandRecipe();
+            Commands.Add("recipe", c);
+            Commands.Add("recipes", c);
+
+            // Item aliases
+            c = new CommandItem();
+            Commands.Add("item", c);
+            Commands.Add("items", c);
 
             // About aliases
             c = new CommandAbout();
