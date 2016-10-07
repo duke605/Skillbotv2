@@ -103,6 +103,9 @@
       <DependentUpon>Database.tt</DependentUpon>
     </Compile>
     <Compile Include="Command\CommandAbout.cs" />
+    <Compile Include="Command\TrasureTrail\CommandTreasureTrailsAnagram.cs" />
+    <Compile Include="Command\TrasureTrail\CommandTreasureTrailsCoords.cs" />
+    <Compile Include="Command\TrasureTrail\CommandTreasureTrails.cs" />
     <Compile Include="Command\CommandTrigger.cs" />
     <Compile Include="Command\CommandUse.cs" />
     <Compile Include="Command\CommandNews.cs" />

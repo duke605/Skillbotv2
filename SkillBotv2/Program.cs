@@ -7,6 +7,7 @@ using Discord;
 using SkillBotv2.Command;
 using SkillBotv2.Command.Item;
 using SkillBotv2.Command.Recipe;
+using SkillBotv2.Command.TrasureTrail;
 using SkillBotv2.Command.User;
 using SkillBotv2.Exceptions;
 using SkillBotv2.Extensions;
@@ -38,6 +39,13 @@ namespace SkillBotv2
             Commands.Add("price", new CommandPrice());
             Commands.Add("use", new CommandUse());
             Commands.Add("trigger", new CommandTrigger());
+
+            // Treasure Trails aliases
+            c = new CommandTreasureTrails();
+            Commands.Add("tt", c);
+            Commands.Add("treasure", c);
+            Commands.Add("treasuretrails", c);
+            Commands.Add("treasuretrail", c);
 
             // News aliases
             c = new CommandNews();
