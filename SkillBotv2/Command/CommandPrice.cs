@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms.DataVisualization.Charting;
 using Discord;
 using Mono.Options;
+using SkillBotv2.Exceptions;
 using SkillBotv2.Util;
 using Color = System.Drawing.Color;
 
@@ -25,13 +26,18 @@ namespace SkillBotv2.Command
             };
 
             a.Item = await RSUtil.GetItemForDynamic(string.Join(" ", optSet.Parse(args)));
+
+            // Validating
+            if (a.Days <= 31)
+                throw new ControlledException("Chart must be greater than or equal to 31.");
+
             return a;
         }
 
         public async Task Execute(object a, Message message)
         {
             var args = (Arguments) a;
-            string link = "";
+            string link;
 
             // Checking if user wants chart
             if (args.Days != null)
