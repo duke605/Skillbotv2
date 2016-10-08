@@ -57,13 +57,12 @@ namespace SkillBotv2.Command
                 previous[1].Value,
                 previous[2].Value
             })
-            .Select(s => $"**{s}**");
+            .Select(s => $"{s}");
             
             await m.Channel.SendMessage(
-                $"**Active districts**: **{activeMatch[1]}** and **{activeMatch[2]}**.\n" +
-                $"**Next districts**: {string.Join(", ", next).ReplaceLast(",", " and")}\n" +
-                $"**Previous districts**: **{previous[1]}** and **{previous[2]}**"
-            );
+                $"**Active districts**: {activeMatch[1]} and {activeMatch[2]}.\n" +
+                $"**Previous districts**: {previous[1]} and {previous[2]}.\n" +
+                $"**Potential upcoming districts**: {string.Join(", ", next).ReplaceLast(",", " and")}.");
         }
 
         /// <summary>
@@ -83,7 +82,7 @@ namespace SkillBotv2.Command
                 throw new ControlledException("Tweets from @JagexClock could not be retrieved.");
 
             // Getting only vos tweets
-            tweets = tweets.Where(t => t.Text.Matches(VosRegex));
+            tweets = tweets.Where(t => t.Text.Matches(VosRegex)).Take(2);
             
             // Getting invalidation time
             DateTime invalTime = DateTime.Today.AddHours(DateTime.Now.TimeOfDay.TotalHours.Ceiling());
