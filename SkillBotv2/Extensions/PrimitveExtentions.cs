@@ -124,6 +124,11 @@ namespace SkillBotv2.Extensions
         public static int ToInt(this string s)
             => int.Parse(s);
 
+        /// <summary>
+        /// Converts a string to a byte
+        /// </summary>
+        /// <param name="s">The string to be sonverted</param>
+        /// <returns>The byte the string represents</returns>
         public static byte ToByte(this string s)
             => byte.Parse(s);
 
@@ -134,8 +139,28 @@ namespace SkillBotv2.Extensions
         public static double Ceiling(this double s)
             => Math.Ceiling(s);
 
+        /// <summary>
+        /// Converts a string to a ulong
+        /// </summary>
+        /// <param name="s">The string to be converted</param>
+        /// <returns>The ulong that the string represents</returns>
         public static ulong ToUlong(this string s)
             => ulong.Parse(s);
+
+        /// <summary>
+        /// Converts an array of keyvalue pairs to a dictionary
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TV"></typeparam>
+        /// <param name="s">The array to be converted</param>
+        public static IDictionary<T, TV> ToIDictionary<T, TV>(this IEnumerable<KeyValuePair<T, TV>> s)
+        {
+            return s.Aggregate(new Dictionary<T, TV>(), (acc, h) =>
+            {
+                acc[h.Key] = h.Value;
+                return acc;
+            });
+        }
 
         public static string ReplaceAll(this string s, string pattern, string replace)
             => Regex.Replace(s, pattern, replace);

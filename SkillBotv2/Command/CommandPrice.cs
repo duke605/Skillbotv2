@@ -10,6 +10,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using Discord;
 using Mono.Options;
 using SkillBotv2.Exceptions;
+using SkillBotv2.Extensions;
 using SkillBotv2.Util;
 using Color = System.Drawing.Color;
 
@@ -65,11 +66,7 @@ namespace SkillBotv2.Command
                 .Reverse()
                 .Take(days)
                 .Reverse()
-                .Aggregate(new Dictionary<DateTime, int>(), (acc, h) =>
-                {
-                    acc[h.Key] = h.Value;
-                    return acc;
-                });
+                .ToIDictionary();
             var chart = new Chart();
             var chartArea = new ChartArea();
             var series = new Series();
