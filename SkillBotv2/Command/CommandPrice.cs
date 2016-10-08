@@ -55,7 +55,7 @@ namespace SkillBotv2.Command
 
         private async Task<string> MakeChart(item item, int days)
         {
-            var history = (await RSUtil.GetPriceHistory(item.Name))
+            var history = (await RSUtil.GetPriceHistory(item.Name.Replace(@"\", "")))
                 .Reverse()
                 .Take(days)
                 .Reverse()
@@ -71,8 +71,8 @@ namespace SkillBotv2.Command
             // Chart area setup
             double min = history.Aggregate(int.MaxValue, (a, h) => h.Value < a ? h.Value : a);
             double max = history.Aggregate(0, (a, h) => h.Value > a ? h.Value : a);
-            min = Math.Floor(min*0.99);
-            max = Math.Ceiling(Math.Min(double.MaxValue, max*1.01));
+            min = Math.Floor(min*0.95);
+            max = Math.Ceiling(Math.Min(double.MaxValue, max*1.05));
             
             // Chart setup
             chart.Size = new Size(539 + max.ToString("#,##0").Length * 8, 500);
