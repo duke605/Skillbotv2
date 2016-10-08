@@ -124,8 +124,15 @@ namespace SkillBotv2.Extensions
         public static int ToInt(this string s)
             => int.Parse(s);
 
+        /// <summary>
+        /// Ceils a double
+        /// </summary>
+        /// <param name="s"></param>
         public static double Ceiling(this double s)
             => Math.Ceiling(s);
+
+        public static ulong ToUlong(this string s)
+            => ulong.Parse(s);
 
         public static string ReplaceAll(this string s, string pattern, string replace)
             => Regex.Replace(s, pattern, replace);

@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -78,18 +80,26 @@ namespace SkillBotv2.Util
         /// </summary>
         /// <param name="img">The image to be uploaded</param>
         /// <returns>The link to the image</returns>
-        public static async Task<string> PostToImgur(Image img)
+        public static async Task<string> PostToImgur(byte[] buffer)
         {
-            HttpResponse<ImgurResponse<ImageDetails>> r = await Unirest.post("https://api.imgur.com/3/image")
+            var r = Unirest.post("https://api.imgur.com/3/image")
                 .header("authorization", $"Client-ID {Secret.ImgurClientId}")
-                .field("image", ImageToByteArray(img))
+                .field("image", buffer)
                 .field("type", "file")
-                .asJsonAsync<ImgurResponse<ImageDetails>>();
+                .asJsonAsync<ImgurResponse<ImageDetails>>().Result;
 
             if (!r.Body.Success)
                 throw new Exception("Error when uploading imgur.");
 
             return r.Body.Data.Link;
         }
+
+        /// <summary>
+        /// Uploads an image to imgur
+        /// </summary>
+        /// <param name="img">The image to be uploaded</param>
+        /// <returns>The link to the image</returns>
+        public static async Task<string> PostToImgur(Image img)
+            => await PostToImgur(ImageToByteArray(img));
     }
 }

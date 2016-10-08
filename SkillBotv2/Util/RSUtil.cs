@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Fclp.Internals.Extensions;
+using Newtonsoft.Json;
 using RestSharp.Extensions;
-using SkillBotv2.Command.Recipe;
 using SkillBotv2.Entities;
 using SkillBotv2.Extensions;
+using Tweetinvi.Core.Extensions;
 using unirest_net.http;
 
 namespace SkillBotv2.Util
@@ -26,7 +26,7 @@ namespace SkillBotv2.Util
             itemName = itemName.ToSentenceCase().Replace(" ", "_");
 
             // Getting item data
-            HttpResponse<string> data = await Unirest.get($"http://runescape.wikia.com/wiki/Module:Exchange/{itemName}?action=raw")
+            var data = await Unirest.get($"http://runescape.wikia.com/wiki/Module:Exchange/{itemName}?action=raw")
                 .asStringAsync();
 
             // Checking if response was okay
@@ -34,6 +34,42 @@ namespace SkillBotv2.Util
                 throw new HttpRequestException($"Request returned {data.Code}.");
 
             return item.ValueOf(data.Body);
+        }
+
+        /// <summary>
+        /// Gets the price history for an item
+        /// </summary>
+        /// <param name="itemName">The name of the item</param>
+        /// <returns>The price history of the item</returns>
+        public static async Task<IDictionary<DateTime, int>> GetPriceHistory(string itemName)
+        {
+            itemName = itemName.ToSentenceCase().Replace(" ", "_");
+
+            var data = await Unirest.get($"http://runescape.wikia.com/wiki/Module:Exchange/{itemName}/Data?action=raw")
+                .asStringAsync();
+
+            // Checking if response was okay
+            if (data.Code < 200 || data.Code > 299)
+                throw new HttpRequestException($"Request returned {data.Code}.");
+
+            // Converting to json
+            var jsonReadable = data.Body
+                .Replace("'", "\"")
+                .Replace("return {", "[")
+                .Replace("}", "]");
+            var json = JsonConvert.DeserializeObject<string[]>(jsonReadable);
+
+            // Converting to price history
+            var dic = new Dictionary<DateTime, int>();
+            json.ForEach( h =>
+            {
+                var time = TimeUtil.FromUnixTime(h.Split(':')[0].ToUlong());
+                var price = h.Split(':')[1].ToInt();
+
+                dic[time] = price;
+            });
+
+            return dic;
         }
 
         /// <summary>
@@ -76,6 +112,11 @@ namespace SkillBotv2.Util
             return await GetItemForName(item);
         }
 
+        /// <summary>
+        /// Gets the user's stats
+        /// </summary>
+        /// <param name="username">The user to get the stats for</param>
+        /// <returns>The user's stats</returns>
         public static async Task<Stats> GetStatsForUser(string username)
         {
             HttpResponse<string> r = await Unirest.get($"http://services.runescape.com/m=hiscore/index_lite.ws?player={username.UrlEncode()}")

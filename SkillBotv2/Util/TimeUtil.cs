@@ -40,6 +40,12 @@ namespace SkillBotv2.Util
                 .ToUniversalTime();
         }
 
+        /// <summary>
+        /// Generates a snowflake
+        /// </summary>
+        /// <param name="v1">5 or less bits as a number</param>
+        /// <param name="v2">5 or less bits as a number</param>
+        /// <returns>The snow flake</returns>
         public static ulong GenerateSnowflake(byte v1, ushort v2)
         {
             string time = Convert.ToString(GetCurrentTimeMillis() - Epoch, 2);
@@ -65,5 +71,8 @@ namespace SkillBotv2.Util
 
             return Convert.ToUInt64(time + id + tableId + uid, 2);
         }
+
+        public static DateTime FromUnixTime(ulong timestamp)
+            => UnixEpoch().AddSeconds(timestamp);
     }
 }
