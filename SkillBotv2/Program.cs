@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using Discord;
 using SkillBotv2.Command;
@@ -12,8 +14,7 @@ using SkillBotv2.Command.User;
 using SkillBotv2.Exceptions;
 using SkillBotv2.Extensions;
 using SkillBotv2.Util;
-using SuperSocket.ClientEngine;
-using unirest_net.http;
+using Tweetinvi;
 
 namespace SkillBotv2
 {
@@ -24,6 +25,7 @@ namespace SkillBotv2
         
         static void Main(string[] args)
         {
+            Auth.SetApplicationOnlyCredentials(Secret.TwitterConsumerKey, Secret.TwitterConsumerKey, Secret.TwitterBearerToken);
             SetupCommands();
             SetupStateListener();
             SetupMessageListener();
@@ -39,6 +41,11 @@ namespace SkillBotv2
             Commands.Add("price", new CommandPrice());
             Commands.Add("use", new CommandUse());
             Commands.Add("trigger", new CommandTrigger());
+
+            // VOS aliases
+            c = new CommandVos();
+            Commands.Add("vos", c);
+            Commands.Add("voice", c);
 
             // Treasure Trails aliases
             c = new CommandTreasureTrails();
