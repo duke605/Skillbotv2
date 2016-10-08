@@ -20,11 +20,11 @@ namespace SkillBotv2.Command
 
             // Validating
             if (level1 > 120)
-                throw new ControlledException("Level1 must be equal to or less than 120.");
+                throw new ControlledException("Level1 must be less than or equal to 120.");
 
             // Validating
             if (level2 > 120)
-                throw new ControlledException("Level1 must be equal to or less than 120.");
+                throw new ControlledException("Level2 must be less than or equal to 120.");
 
             // Validating
             if (level1 <= 0)

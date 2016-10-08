@@ -28,7 +28,7 @@ namespace SkillBotv2.Command
             a.Item = await RSUtil.GetItemForDynamic(string.Join(" ", optSet.Parse(args)));
 
             // Validating
-            if (a.Days <= 31)
+            if (a.Days < 31)
                 throw new ControlledException("Chart must be greater than or equal to 31.");
 
             return a;
@@ -37,7 +37,7 @@ namespace SkillBotv2.Command
         public async Task Execute(object a, Message message)
         {
             var args = (Arguments) a;
-            string link;
+            var link = string.Empty;
 
             // Checking if user wants chart
             if (args.Days != null)
@@ -83,7 +83,7 @@ namespace SkillBotv2.Command
             // Chart setup
             chart.Size = new Size(539 + max.ToString("#,##0").Length * 8, 500);
 
-            chartArea.AxisX.LabelStyle.Format = "MMM dd";
+            chartArea.AxisX.LabelStyle.Format = days > 119 ? "MMM yyyy" : "MMM dd";
             chartArea.AxisY.LabelStyle.Format = "#,##0";
             chartArea.AxisX.MajorGrid.LineColor = Color.FromArgb(0x3e, 0x41, 0x46);
             chartArea.AxisY.MajorGrid.LineColor = Color.FromArgb(0x3e, 0x41, 0x46);
