@@ -100,7 +100,34 @@ namespace SkillBotv2.Extensions
             return -1;
         }
 
+        /// <summary>
+        /// Replaces the last occurance of the target
+        /// </summary>
+        /// <param name="s">The haystack</param>
+        /// <param name="target">The needle</param>
+        /// <param name="replacement">The replacement for the needle</param>
+        /// <returns>The haystack with the needle replaced</returns>
+        public static string ReplaceLast(this string s, string target, string replacement)
+        {
+            var place = s.LastIndexOf(target);
+
+            return place == -1 
+                ? s 
+                : s.Remove(place, target.Length).Insert(place, replacement);
+        }
+
+        /// <summary>
+        /// Converts a string to in
+        /// </summary>
+        /// <param name="s">The string to be converted</param>
+        /// <returns>The integer the string represents</returns>
         public static int ToInt(this string s)
             => int.Parse(s);
+
+        public static double Ceiling(this double s)
+            => Math.Ceiling(s);
+
+        public static string ReplaceAll(this string s, string pattern, string replace)
+            => Regex.Replace(s, pattern, replace);
     }
 }

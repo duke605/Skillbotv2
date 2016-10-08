@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using SkillBotv2.Extensions;
+using Tweetinvi.Core.Extensions;
 using unirest_net.http;
 
 namespace SkillBotv2.Command
@@ -12,16 +13,13 @@ namespace SkillBotv2.Command
     {
         public async Task<object> ParseArguments(string[] args, Message m)
         {
-            if (!args.Any())
-                throw new Exception("Missing required argument");
-
-            if (args.First() == "-?" || args.First() == "--help")
+            if (args.FirstOrDefault() == "-?" || args.FirstOrDefault() == "--help")
             {
                 await m.Channel.SendMessage("`!portables <portable>`");
                 return false;
             }
 
-            return Enum.Parse(typeof(Portables), args.FirstOrDefault()?.ToSentenceCase() ?? "Well");
+            return Enum.Parse(typeof(Portables), args.FirstOrDefault()?.ToSentenceCase() ?? "All");
         }
 
         public async Task Execute(object arguments, Message message)
@@ -40,9 +38,19 @@ namespace SkillBotv2.Command
             // Checking if response was ok
             if (r.Code < 200 || r.Code > 299)
                 throw new Exception($"Portables spreadsheet could not be accessed. Server returned code {r.Code}.");
+            
+            // Showing single
+            if (portable != Portables.All)
+            {
+                await message.Channel.SendMessage(
+                    $"**Portable {portable}s**: {r.Body.Locations[$"{portable}s"]}\n" +
+                    $"**Last Updated**: {r.Body.LastUpdate} ago by {r.Body.UpdatedBy}");
+            }
 
+            var m = "";
+            r.Body.Locations.ForEach(kv => m += $"**{kv.Key}**: {kv.Value}\n");
             await message.Channel.SendMessage(
-                $"**Portable {portable}s**: {r.Body.Locations[$"{portable}s"]}\n" +
+                $"{m}" +
                 $"**Last Updated**: {r.Body.LastUpdate} ago by {r.Body.UpdatedBy}");
         }
 
@@ -75,7 +83,7 @@ namespace SkillBotv2.Command
                             .Replace(" cw", " Castle Wars")
                             .Replace(" sp", " Shanty Pass")
                             .Replace(" prif", " Prifddinas")
-                            .Replace(@" p(?:$|\s)", " Prifddinas"));
+                            .ReplaceAll(" p(?!rif)", " Prifddinas"));
 
                     // Getting the person that last updated it
                     UpdatedBy = _values[2][3];
@@ -117,7 +125,8 @@ namespace SkillBotv2.Command
             Brazier,
             Sawmill,
             Range,
-            Well
+            Well,
+            All
         }
     }
 }

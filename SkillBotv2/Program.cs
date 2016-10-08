@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using Discord;
 using SkillBotv2.Command;
@@ -87,8 +85,15 @@ namespace SkillBotv2
 
         private static void SetupStateListener()
         {
+            Client.Ready += (s, e) =>
+            {
+                Client.SetGame($"{Client.Servers.Count().ToString("#,##0")} Guilds");
+            };
+
             Client.LeftServer += async (s, e) =>
             {
+                Client.SetGame($"{Client.Servers.Count().ToString("#,##0")} Guilds");
+
                 // Creating settings for server
                 using (var db = new Database())
                 {
@@ -113,6 +118,8 @@ namespace SkillBotv2
 
             Client.JoinedServer += async (s, e) =>
             {
+                Client.SetGame($"{Client.Servers.Count().ToString("#,##0")} Guilds");
+
                 // Creating settings for server
                 using (var db = new Database())
                 {
