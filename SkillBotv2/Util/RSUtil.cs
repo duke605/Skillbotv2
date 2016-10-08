@@ -158,5 +158,26 @@ namespace SkillBotv2.Util
 
             return (int)(Math.Floor(exp / 4.0) - stat.Exp);
         }
+
+        /// <summary>
+        /// Calculates the remaining exp between current exp and desired level
+        /// </summary>
+        /// <param name="level1">The user's stat</param>
+        /// <param name="level2">The desired level</param>
+        /// <returns>The exp between current exp and the desired level</returns>
+        public static int ExpBetweenLevels(double level1, double level2)
+        {
+            var exp1 = 0;
+            var exp2 = 0;
+
+            for (double i = 1; i < level2; i++)
+            {
+                if (i < level1)
+                    exp1 += (int)Math.Floor(i + 300 * Math.Pow(2, i / 7));
+                exp2 += (int)Math.Floor(i + 300 * Math.Pow(2, i / 7));
+            }
+
+            return (int) (Math.Floor(exp2 / 4.0) - Math.Floor(exp1 / 4.0));
+        }
     }
 }

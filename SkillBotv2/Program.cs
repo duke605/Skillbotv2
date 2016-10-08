@@ -40,6 +40,11 @@ namespace SkillBotv2
             Commands.Add("use", new CommandUse());
             Commands.Add("trigger", new CommandTrigger());
 
+            // Exp aliases
+            c = new CommandExp();
+            Commands.Add("xp", c);
+            Commands.Add("exp", c);
+
             // VOS aliases
             c = new CommandVos();
             Commands.Add("vos", c);

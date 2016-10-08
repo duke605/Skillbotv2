@@ -124,6 +124,9 @@ namespace SkillBotv2.Extensions
         public static int ToInt(this string s)
             => int.Parse(s);
 
+        public static byte ToByte(this string s)
+            => byte.Parse(s);
+
         /// <summary>
         /// Ceils a double
         /// </summary>
