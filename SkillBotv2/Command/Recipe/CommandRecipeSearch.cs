@@ -90,7 +90,7 @@ namespace SkillBotv2.Command.Recipe
             }
 
             // Getting username
-            a.Stats = await RSUtil.GetStatsForUser(usernme);
+            a.RS3Stats = await RSUtil.GetStatsForUser(usernme);
 
             return a;
         }
@@ -99,7 +99,7 @@ namespace SkillBotv2.Command.Recipe
         {
             using (var db = new Database())
             {
-                Stats.Stat stat = a.Stats.GetStatForName(a.Skill.ToString());
+                Stat stat = a.RS3Stats.GetStatForName(a.Skill.ToString());
                 int levelDiff = RSUtil.ExpBetweenLevels(stat, a.Level);
                 var dbLookup = new Stopwatch();
                 var queryBuild = new Stopwatch();
@@ -246,7 +246,7 @@ namespace SkillBotv2.Command.Recipe
         public struct SearchArguments
         {
             public AddArguments.Skill Skill { get; set; }
-            public Stats Stats { get; set; }
+            public RS3Stats RS3Stats { get; set; }
             public List<Order> Orders { get; set; }
             public int Limit { get; set; }
             public int Page { get; set; }

@@ -39,6 +39,7 @@ namespace SkillBotv2
             Commands.Add("price", new CommandPrice());
             Commands.Add("use", new CommandUse());
             Commands.Add("trigger", new CommandTrigger());
+            Commands.Add("stats", new CommandStats());
 
             // Exp aliases
             c = new CommandExp();

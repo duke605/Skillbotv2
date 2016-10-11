@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SkillBotv2.Entities
 {
-    class Stats
+    class RS3Stats
     {
         public Stat Overall { get; set; }
         public Stat Attack { get; set; }
@@ -39,24 +39,7 @@ namespace SkillBotv2.Entities
 
         public Stat GetStatForName(string name)
         {
-            return (Stat) GetType().GetProperty(name).GetMethod.Invoke(this, null);
-        }
-
-        public struct Stat
-        {
-            public int Rank { get; set; }
-            public int Level { get; set; }
-            public long Exp { get; set; }
-
-            public static Stat CreateFromCSV(string[] parts)
-            {
-                return new Stat
-                {
-                    Rank = int.Parse(parts[0]),
-                    Level = int.Parse(parts[1]),
-                    Exp = long.Parse(parts[2])
-                }; ;
-            }
+            return (Stat)GetType().GetProperty(name).GetMethod.Invoke(this, null);
         }
     }
 }

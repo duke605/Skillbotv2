@@ -12,7 +12,7 @@ using unirest_net.http;
 
 namespace SkillBotv2.Util
 {
-    class RSUtil
+    static class RSUtil
     {
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace SkillBotv2.Util
         /// </summary>
         /// <param name="username">The user to get the stats for</param>
         /// <returns>The user's stats</returns>
-        public static async Task<Stats> GetStatsForUser(string username)
+        public static async Task<RS3Stats> GetStatsForUser(string username)
         {
             HttpResponse<string> r = await Unirest.get($"http://services.runescape.com/m=hiscore/index_lite.ws?player={username.UrlEncode()}")
                 .asStringAsync();
@@ -126,7 +126,7 @@ namespace SkillBotv2.Util
             if (r.Code < 200 || r.Code > 299)
                 throw new Exception($"Request returned {r.Code}");
 
-            var stats = new Stats();
+            var stats = new RS3Stats();
             var lines = r.Body.Split('\n');
             var props = stats.GetType().GetProperties();
 
@@ -135,7 +135,7 @@ namespace SkillBotv2.Util
                 var prop = props[i];
                 var parts = lines[i].Split(',');
 
-                prop.SetMethod.Invoke(stats, new object[] {Stats.Stat.CreateFromCSV(parts)});
+                prop.SetMethod.Invoke(stats, new object[] {Stat.CreateFromCSV(parts)});
             }
 
             return stats;
@@ -147,7 +147,7 @@ namespace SkillBotv2.Util
         /// <param name="stat">The user's stat</param>
         /// <param name="level">The desired level</param>
         /// <returns>The exp between current exp and the desired level</returns>
-        public static int ExpBetweenLevels(Stats.Stat stat, double level)
+        public static int ExpBetweenLevels(Stat stat, double level)
         {
             int exp = 0;
 

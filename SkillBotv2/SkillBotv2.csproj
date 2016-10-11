@@ -155,6 +155,7 @@
     </Compile>
     <Compile Include="Command\CommandAbout.cs" />
     <Compile Include="Command\CommandExp.cs" />
+    <Compile Include="Command\CommandStats.cs" />
     <Compile Include="Command\CommandVos.cs" />
     <Compile Include="Command\TrasureTrail\CommandTreasureTrailsAnagram.cs" />
     <Compile Include="Command\TrasureTrail\CommandTreasureTrailsCoords.cs" />
@@ -197,7 +198,9 @@
     <Compile Include="Entities\ImgurResponse.cs" />
     <Compile Include="Entities\Imgur\ImageDetails.cs" />
     <Compile Include="Entities\Item.cs" />
-    <Compile Include="Entities\Stats.cs" />
+    <Compile Include="Entities\OSRSStats.cs" />
+    <Compile Include="Entities\RS3Stats.cs" />
+    <Compile Include="Entities\Stat.cs" />
     <Compile Include="Exceptions\ControlledException.cs" />
     <Compile Include="Extensions\DatabaseExtensions.cs" />
     <Compile Include="Extensions\DebugExtensions.cs" />
@@ -225,6 +228,7 @@
     </Compile>
     <Compile Include="Util\CommandLineUtil.cs" />
     <Compile Include="Util\ImageUtil.cs" />
+    <Compile Include="Util\OSRSUtil.cs" />
     <Compile Include="Util\RSUtil.cs" />
     <Compile Include="Util\Table.cs" />
     <Compile Include="Util\TimeUtil.cs" />
