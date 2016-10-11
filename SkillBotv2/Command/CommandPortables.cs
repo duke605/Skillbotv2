@@ -89,32 +89,46 @@ namespace SkillBotv2.Command
                     UpdatedBy = _values[2][3];
 
                     // Getting last time updated
-                    var timeParts = _values[2][1].Split('@');
-
-                    var first = timeParts[0].Trim().Split('/');
-                    var second = timeParts[1].Trim().Split(':');
-
-                    var day = first[0].ToInt();
-                    var month = first[1].ToInt();
-                    var year = first[2].ToInt();
-
-                    var hour = second[0].ToInt();
-                    var min = second[1].ToInt();
-
-                    var diff = DateTime.Now - new DateTime(year, month, day, hour, min, 0, DateTimeKind.Utc).ToLocalTime();
-
-                    // Formatting
-                    if (diff.TotalDays >= 1)
-                        LastUpdate = diff.TotalDays.Round() + "d";
-                    else if (diff.TotalHours >= 1)
-                        LastUpdate = diff.TotalHours.Round() + "h";
-                    else if (diff.TotalMinutes >= 1)
-                        LastUpdate = diff.TotalMinutes.Round() + "m";
-                    else
-                        LastUpdate = diff.TotalSeconds.Round() + "s";
+                    LastUpdate = GetTime(_values[2][1]);
                 }
             }
 
+            private string GetTime(string time)
+            {
+                var timeParts = time.Contains("@")
+                    ? _values[2][1].Split('@')
+                    : _values[2][1].Split(',');
+
+                var first = timeParts[0].Trim().Split('/');
+                var second = timeParts[1].Trim().Split(':');
+
+                var day = first[0].ToInt();
+                var month = first[1].ToInt();
+                var year = first[2].ToInt();
+
+                // Compensating for 2 digit year
+                if (year < 2000)
+                    year += 2000;
+
+                var hour = second[0].ToInt();
+                var min = second[1].ToInt();
+
+                var diff = DateTime.Now - new DateTime(year, month, day, hour, min, 0, DateTimeKind.Utc).ToLocalTime();
+
+                string fTime;
+
+                // Formatting
+                if (diff.TotalDays >= 1)
+                    fTime = diff.TotalDays.Round() + "d";
+                else if (diff.TotalHours >= 1)
+                    fTime = diff.TotalHours.Round() + "h";
+                else if (diff.TotalMinutes >= 1)
+                    fTime = diff.TotalMinutes.Round() + "m";
+                else
+                    fTime = diff.TotalSeconds.Round() + "s";
+
+                return fTime;
+            }
         }
 
         public enum Portables
