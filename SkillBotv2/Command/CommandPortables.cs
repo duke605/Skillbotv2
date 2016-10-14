@@ -45,6 +45,8 @@ namespace SkillBotv2.Command
                 await message.Channel.SendMessage(
                     $"**Portable {portable}s**: {r.Body.Locations[$"{portable}s"]}\n" +
                     $"**Last Updated**: {r.Body.LastUpdate} ago by {r.Body.UpdatedBy}");
+
+                return;
             }
 
             var m = "";
@@ -93,6 +95,11 @@ namespace SkillBotv2.Command
                 }
             }
 
+            /// <summary>
+            /// Figures out the format of the time and gets the last time it was updated
+            /// </summary>
+            /// <param name="time">The time as a string to decipher -_-</param>
+            /// <returns>Formatted time string</returns>
             private string GetTime(string time)
             {
                 var timeParts = time.Contains("@")

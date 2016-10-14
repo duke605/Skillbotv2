@@ -25,6 +25,7 @@ namespace SkillBotv2
         public string Name { get; set; }
         public int Price { get; set; }
         public System.DateTime UpdatedAt { get; set; }
+        public long UpdatedAtRD { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<input> inputs { get; set; }

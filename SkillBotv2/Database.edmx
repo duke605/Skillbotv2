@@ -29,6 +29,7 @@
           <Property Name="Name" Type="varchar" MaxLength="45" Nullable="false" />
           <Property Name="Price" Type="int" Nullable="false" />
           <Property Name="UpdatedAt" Type="datetime" Precision="0" Nullable="false" />
+          <Property Name="UpdatedAtRD" Type="uint" Nullable="false" />
         </EntityType>
         <EntityType Name="outputs">
           <Key>
@@ -184,6 +185,7 @@
           <Property Name="UpdatedAt" Type="DateTime" Nullable="false" />
           <NavigationProperty Name="inputs" Relationship="Model.FK_Input_To_Item" FromRole="item" ToRole="input" />
           <NavigationProperty Name="outputs" Relationship="Model.FK_Output_To_Item" FromRole="item" ToRole="output" />
+          <Property Name="UpdatedAtRD" Type="Int64" Nullable="false" />
         </EntityType>
         <EntityContainer Name="Database" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="items" EntityType="Self.item" />
@@ -360,6 +362,7 @@
           <EntitySetMapping Name="items">
             <EntityTypeMapping TypeName="Model.item">
               <MappingFragment StoreEntitySet="items">
+                <ScalarProperty Name="UpdatedAtRD" ColumnName="UpdatedAtRD" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Price" ColumnName="Price" />

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.DataVisualization.Charting;
 using Discord;
@@ -21,6 +19,7 @@ namespace SkillBotv2.Command
         public async Task<object> ParseArguments(string[] args, Message message)
         {
             var a = new Arguments();
+
             var optSet = new OptionSet
             {
                 { "c|chart=", (int? c) => a.Days = c }
@@ -57,12 +56,16 @@ namespace SkillBotv2.Command
             {
                 // Adding item to db cause why not
                 db.items.AddOrUpdate(args.Item);
+
+                // Saving
+                if (await db.SaveChangesAsync() < 1)
+                    await message.Channel.SendMessage("Failed to save item to db.");
             }
         }
 
         private async Task<string> MakeChart(item item, int days)
         {
-            var history = (await RSUtil.GetPriceHistory(item.Name.Replace(@"\", "")))
+            var history = (await RSUtil.GetPriceHistory(item.Name, true))
                 .Reverse()
                 .Take(days)
                 .Reverse()
@@ -79,7 +82,7 @@ namespace SkillBotv2.Command
             
             // Chart setup
             chart.Size = new Size(539 + max.ToString("#,##0").Length * 8, 500);
-
+            
             chartArea.AxisX.LabelStyle.Format = days > 119 ? "MMM yyyy" : "MMM dd";
             chartArea.AxisY.LabelStyle.Format = "#,##0";
             chartArea.AxisX.MajorGrid.LineColor = Color.FromArgb(0x3e, 0x41, 0x46);
@@ -99,10 +102,10 @@ namespace SkillBotv2.Command
             series.ChartType = SeriesChartType.Line;
             series.XValueType = ChartValueType.DateTime;
             chart.Series.Add(series);
-
+            
             // bind the datapoints
             chart.Series["Series1"].Points.DataBindXY(history.Keys, history.Values);
-            
+
             // draw!
             chart.Invalidate();
 

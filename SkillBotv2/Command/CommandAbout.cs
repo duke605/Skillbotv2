@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 
 namespace SkillBotv2.Command
@@ -18,7 +14,7 @@ namespace SkillBotv2.Command
         {
             await m.Channel.SendMessage("__Author:__ @Duke605#4705\n" +
                                         "__Library:__ Discord.Net\n" +
-                                        "__Version:__ 2.0.9\n" +
+                                        "__Version:__ 2.1.0\n" +
                                         "__GitHubPage:__ <https://github.com/duke605/Skillbotv2>");
         }
     }

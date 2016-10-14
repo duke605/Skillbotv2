@@ -8,6 +8,7 @@ using Discord;
 using Mono.Options;
 using SkillBotv2.Extensions;
 using SkillBotv2.Util;
+using Tweetinvi.Core.Extensions;
 
 namespace SkillBotv2.Command.Item
 {
@@ -17,111 +18,80 @@ namespace SkillBotv2.Command.Item
         {
             var args = new UpdateArguments();
             var optionSet = new OptionSet();
-            var help = false;
-            string error = null;
-
-            optionSet.Add("?|help", h => help = h != null);
-            optionSet.Add("a|all", b => args.All = b != null);
-            args.Items = optionSet.Parse(arguments).Select(s => s.ToSentenceCase()).ToList();
             
-            // Showing help
-            if (help || error != null)
-            {
-                string m = "```";
-
-                // Adding error
-                if (error != null)
-                    m += $"Error:\n{error}\n\n";
-
-                m += "Usage:\n" +
-                     "!item update <item-id | item-name> [--all]\n" +
-                     "\n" +
-                     "Options:\n" +
-                     "-a, --all Updates all items.```";
-
-                await message.Channel.SendMessage(m);
-                return false;
-            }
+            optionSet.Parse(arguments);
 
             return args;
         }
 
         private async Task UpdateItem(UpdateArguments args, Message message)
         {
-            using (Database db = new Database())
+            var m = await message.Channel.SendMessage("Updating...");
+
+            using (var db = new Database())
             {
                 // Excluding items not in the db
-                decimal temp;
-                var names = args.Items.Where(i => !decimal.TryParse(i, out temp)).ToList();
-                var ids = args.Items.Where(i => decimal.TryParse(i, out temp)).Select(i => decimal.Parse(i)).ToList();
-                var count = 0;
-                var total = 0;
                 var updated = 0;
 
-                // Updating
-                do
+                var runeday = await RSUtil.GetRuneday();
+                var total = await db.Database.SqlQuery<int>(
+                        "SELECT COUNT(*) " +
+                        "FROM items " +
+                        "WHERE Id <> 0 " +
+                        "AND UpdatedAtRD <> @p0", runeday)
+                        .FirstAsync();
+
+                db.Database.Log = Console.WriteLine;
+
+                for (var i = 0;;i++)
                 {
                     // Getting item batch
-                    var items = await db.items.Where(i => args.All || ids.Contains(i.Id) || names.Contains(i.Name))
-                        .Where(i => i.Id != 0)
-                        .OrderBy(i => i.Name)
-                        .Skip(count++ * 100)
-                        .Take(100)
+                    var items = await db.Database.SqlQuery<item>(
+                        "SELECT * " +
+                        "FROM items " +
+                        "WHERE Id <> 0 " +
+                        "AND UpdatedAtRD <> @p0 " +
+                        "LIMIT @p1, 50"
+                        , runeday
+                        , i * 50)
                         .ToListAsync();
-
-                    total += items.Count;
-
-                    // Breaking if nothing returned
+                    
                     if (items.Count <= 0)
                         break;
 
-                    // Creating task array
-                    Task<item>[] tasks = new Task<item>[items.Count];
+                    var tasks = new Task<item>[items.Count];
 
-
-                    // Looping through items and starting the task
-                    var j = 0;
-                    foreach (item item in items)
-                        tasks[j++] = RSUtil.GetItemForName(item.Name);
-
+                    // Starting tasks
+                    items.ForEachWithIndex((index, item) 
+                        => tasks[index] = RSUtil.GetItemForId((int)item.Id, item.Name, runeday));
+                    
                     // Waiting for tasks to complete
                     await Task.Run(() =>
                     {
-                        try
-                        {
-                            Task.WaitAll(tasks);
-                        }
-                        catch (Exception)
-                        {
-                        }
+                        try { Task.WaitAll(tasks); } catch(Exception) {}
                     });
 
-                    // Pulling items from completed tasks
-                    foreach (Task<item> task in tasks)
-                    {
-                        // Checking if task completed successfully
-                        if (task.Status != TaskStatus.RanToCompletion)
-                            continue;
+                    var updateQuery = "UPDATE items SET Price = (CASE";
 
-                        item item = task.Result;
-                        item.Name = item.Name.Replace(@"\", "");
-                        db.items.AddOrUpdate(task.Result);
-                    }
-                    
-                    // Saving
-                    if ((updated += await db.SaveChangesAsync()) < 0)
-                        await message.Channel.SendMessage("There was an error updating some item prices.");
-                } while (true);
+                    var predicatedTasks = tasks.Where(t => t.Status == TaskStatus.RanToCompletion);
+                    predicatedTasks.ForEach(t => updateQuery += $" WHEN Id = {t.Result.Id} THEN {t.Result.Price}");
 
-                
-                await message.Channel.SendMessage($"**{updated}**/**{total}** items updated.");
+                    updateQuery += " ELSE Price END), UpdatedAtRD = @p0, UpdatedAt = @p1 WHERE Id In " +
+                                   $"({string.Join(",", predicatedTasks.Select(t => t.Result.Id))});";
+
+                    updated += db.Database.ExecuteSqlCommand(updateQuery
+                        , runeday
+                        , DateTime.Now);
+
+                    await m.Edit($"Updated **{updated}**/**{total}** items.");
+                }
+
+                await message.Channel.SendMessage($"Item updates completed. Updated **{updated}**/**{total}** items.");
             }
         }
 
         private struct UpdateArguments
         {
-            public bool All { get; set; }
-            public List<string> Items { get; set; }
         }
     }
 }

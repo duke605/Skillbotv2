@@ -40,6 +40,7 @@ namespace SkillBotv2
             Commands.Add("use", new CommandUse());
             Commands.Add("trigger", new CommandTrigger());
             Commands.Add("stats", new CommandStats());
+            //Commands.Add("test", new CommandTest());
 
             // Exp aliases
             c = new CommandExp();
@@ -148,6 +149,9 @@ namespace SkillBotv2
                 ICommand command;
                 var message = m.Message.RawText.Trim();
 
+                if (m.Message.IsAuthor || m.Channel.IsPrivate)
+                    return;
+
                 // Checking if we can output in this channel
                 using (var db = new Database())
                 {
@@ -155,9 +159,7 @@ namespace SkillBotv2
                     var server = await db.servers.FirstAsync(o => o.Id == m.Server.Id);
 
                         // Failing fast
-                    if (m.Message.IsAuthor
-                        || m.Channel.IsPrivate
-                        || !(match = Regex.Match(message, $"^\\{server.Trigger}(.+?)(?:\\s|$)")).Groups[1].Success
+                    if ( !(match = Regex.Match(message, $"^\\{server.Trigger}(.+?)(?:\\s|$)")).Groups[1].Success
                         || !Commands.TryGetValue(match.Groups[1].Value.ToLower(), out command)
                         || (match.Groups[1].Value.ToLower() != "use" && !db.channels.Any(c => c.Id == m.Channel.Id)))
                     return;
